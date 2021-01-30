@@ -1,0 +1,13 @@
+proxy:
+  server: 127.0.0.1
+  port: 
+smtp:
+  server: 
+  port: 
+user:
+  username: xxx@gmail.com
+  password: xxx
+  sender: xxx@gmail.com
+email_t: scripts\template_email\data_example\templates\test.html
+receivers: scripts\template_email\data_example\receiver.csv
+attachments: scripts\template_email\data_example\attachment

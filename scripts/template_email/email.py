@@ -1,24 +1,20 @@
 import logging
 from models.EmailGenerator import EmailGenerator
 from models.EmailSender import EmailSender
-
-LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
-DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
-
-logging.basicConfig(filename='my.log', level=logging.DEBUG, format=LOG_FORMAT, datefmt=DATE_FORMAT)
-
-SENDER = 'yubowang2020@gmail.com'
-SMTP_CONFIG = {'server': 'smtp.gmail.com', 'port': 587}
-PROXY_CONFIG = {'server': '127.0.0.1', 'port': 10808}
-USER_ACCOUNT = {'username':'my mail', 'password':'mypsd'}
-SUBJECT = "Test Test"
-RECEIVER = "wangyb0327@gmail.com"
+from models import util
+import time
 
 if __name__ == '__main__':
-    receiver = RECEIVER
-    email_sender = EmailSender(SENDER, USER_ACCOUNT, SMTP_CONFIG, True, PROXY_CONFIG)
-    infilling = {'test':'This is the infill test text.'}
-    attachment = [r'scripts\template_email\data\testpdf.pdf']
-    eg = EmailGenerator(SENDER)
-    mail = eg.generate(r'scripts\template_email\templates\test.html', receiver, infilling, attachment)
-    email_sender.send(receiver, mail)
+    CFG_PATH = r'scripts\template_email\data\cfg.yaml' # 'scripts\template_email\data_example\cfg.yaml'
+    util.init_log()
+    logging.info('Start sending.')
+    cfg = util.read_cfg(CFG_PATH)
+    receivers, infillings = util.get_receivers(cfg['receivers'])
+    attachments = util.get_attachment(cfg['attachments'])
+    email_sender = EmailSender(cfg['user'], cfg['smtp'], True, cfg['proxy'])
+    eg = EmailGenerator(cfg['user'])
+    for receiver, infilling in zip(receivers, infillings):
+        mail = eg.generate(cfg['email_t'], receiver, infilling, attachments)
+        email_sender.send(receiver, mail)
+        time.sleep(1)
+    logging.info('Sending done.')

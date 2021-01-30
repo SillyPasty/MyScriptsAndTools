@@ -6,10 +6,11 @@ import logging
 import os
 from bs4 import BeautifulSoup
 
+
 class EmailGenerator:
-    def __init__(self, sender):
-        self.sender = sender
-    
+    def __init__(self, user_account):
+        self.sender = user_account['sender']
+
     def generate(self, template_path, receiver, infilling, attachments):
         subject, text = self.__parse_template(template_path, infilling)
         email = MIMEMultipart('mixed')
@@ -22,14 +23,16 @@ class EmailGenerator:
             try:
                 _, filename = os.path.split(attachment)
                 sendpart = MIMEApplication(open(attachment, 'rb').read())
-                sendpart.add_header('Content-Disposition', 'attachment', filename=filename)
+                sendpart.add_header('Content-Disposition',
+                                    'attachment',
+                                    filename=filename)
                 email.attach(sendpart)
             except Exception as e:
-                logging.error("Attach file {} failed. Reason: {}".format(attachment, e))
+                logging.error("Attach file {} failed. Reason: {}".format(
+                    attachment, e))
 
         return email
 
-    
     def __parse_template(self, template_path, infilling):
         try:
             with open(template_path, 'r') as f:
@@ -45,5 +48,3 @@ class EmailGenerator:
         except Exception as e:
             logging.error("Parse_template failed!, Reason{}".format(e))
             raise e
-
-

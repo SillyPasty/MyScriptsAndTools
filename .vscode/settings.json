@@ -1,3 +1,5 @@
 {
-    "python.pythonPath": "C:\\WYB\\Software\\Anaconda\\envs\\scripts\\python.exe"
+    "python.pythonPath": "C:\\Software\\anaconda3\\envs\\scripts\\python.exe",
+    "python.formatting.provider": "yapf",
+    "editor.wordWrapColumn": 800
 }
